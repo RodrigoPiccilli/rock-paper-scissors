@@ -75,6 +75,7 @@ header {
 .gameplay-icons {
     width: 300px;
     height: auto;
+    border-radius: 20%;
 }
 
 .gameplay-actions {
@@ -89,7 +90,7 @@ header {
         height: 100px;
 
         border-radius: 10px;
-        background-color: transparent;
+        /* background-color: transparent; */
         border: none;
 
         font-size: 2rem;
@@ -121,5 +122,29 @@ header {
 
 .collapse {
     display: none;
+}
+
+@keyframes upAndDown {
+    
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-20%);
+    }
+
+
+}
+
+.animate-hands {
+
+    animation-name: upAndDown;
+    animation-duration: 1s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: 4;  
+    animation-play-state: running;
+
+
 }
 
