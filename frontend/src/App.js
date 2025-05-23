@@ -1,23 +1,32 @@
-import logo from './logo.svg';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+
+import Menu from "./components/Menu.jsx"
+import CPU from "./components/CPU.jsx"
+
 import './App.css';
+
+const AppContent = () => {
+
+    // 1 Player
+    // 2 Player
+
+    return (
+
+        <Routes> 
+            <Route path='/' element= {<Menu/> }> </Route>
+            <Route path='/vsCPU' element= {<CPU/> }> </Route>
+        </Routes>
+
+    )
+
+}
 
 function App() {
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+        <BrowserRouter>
+            <AppContent/>
+        </BrowserRouter>
     </div>
   );
 }

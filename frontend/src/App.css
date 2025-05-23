@@ -1,38 +1,125 @@
-.App {
-  text-align: center;
+#game-container {
+   width: 100vw;
+   height: 100vh;
+
+   display: flex;
+   flex-direction: column;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+header {
+    width: 100vw;
+    height: 10vh;
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    align-items: center;
+
+    background-image: url("./components/images/background.png");
+    border-bottom: 7px solid gray;
+
+    h1 {
+        background-color: white;
+        width: fit-content;
+        font-size: 2.5rem;
+        text-decoration: underline;
+    }
+
+
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+#game-type h1 {
+    text-align: center;
+    text-decoration: underline;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+#gameplay {
+  display: grid; 
+  grid-auto-columns: 1fr; 
+  grid-template-columns: 1fr 1fr 1fr; 
+  grid-template-rows: 1fr; 
+  gap: 0px 0px; 
+  grid-template-areas: 
+    "player indicator cpu"; 
+
+
+   padding: 5%;
+   
+}
+.player { 
+    grid-area: player; 
+
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+
+}
+.indicator { 
+    grid-area: indicator; 
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+}
+.cpu { 
+    grid-area: cpu; 
+
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+
 }
 
-.App-link {
-  color: #61dafb;
+.gameplay-icons {
+    width: 300px;
+    height: auto;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.gameplay-actions {
+
+    align-self: center;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+
+    button {
+        width: 250px;
+        height: 100px;
+
+        border-radius: 10px;
+        background-color: transparent;
+        border: none;
+
+        font-size: 2rem;
+        transition: transform 0.7s ease-out;
+    }
+
 }
+
+#start {
+    background-color: rgb(64, 182, 255);
+    border: 10px solid rgb(39, 172, 255);
+    box-shadow: 0px 5px 0px 5px lightgray;
+}
+
+#restart {
+    background-color: rgb(255, 62, 62);
+    border: 10px solid rgb(255, 22, 22);
+    box-shadow: 0px 5px 0px 5px lightgray;
+}
+
+#start:hover, #restart:hover {
+    transform: translateY(2%);
+}
+
+#start:active, #restart:active {
+    transform: translateY(10%);
+    box-shadow: none;
+}
+
+.collapse {
+    display: none;
+}
+
