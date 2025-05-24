@@ -1,20 +1,23 @@
-import React, {useState} from 'react'
+import React, {useState, useEffect} from 'react'
 
 import rockLeft from "./images/rock-reverse.png"
+import paperLeft from "./images/paper.png"
+import scissorsLeft from "./images/scissors.png"
+
 
 import rockRight from "./images/rock.png"
+import paperRight from "./images/paper-reverse.png"
+import scissorsRight from "./images/scissors-reverse.png"
 
-// import paper from "./images/paper.png"
+import indicatorLeft from "./images/indicatorLeft.png"
+import indicatorRight from "./images/indicatorRight.png"
 
-// import scissors from "./images/scissors.png"
-
-import indicator from "./images/indicator.png"
 
 const CPU = () => {
 
     const [animate, setAnimate] = useState(false);
 
-    const [userMove, setUserMove] = useState('');
+    const [userMove, setUserMove] = useState('rock');
 
     const [cpuMove, setCPUMove] = useState('');
 
@@ -22,9 +25,15 @@ const CPU = () => {
 
     const [cpuPoints, setCPUPoints] = useState(0);
 
+    const [ongoingRound, setOngoing] = useState(false);
+
+    const [outcome, setOutcome] = useState(0);
+
     const handleStartRound = () => {
 
         setAnimate(true);
+        setOutcome(0);
+
 
         fetch(`/cpu`)
         .then(response => response.json())
@@ -32,36 +41,47 @@ const CPU = () => {
 
             console.log(data);
 
+            console.log(userMove);
+
             setCPUMove(data.cpuMove);
 
-            roundOutcome();
+            setTimeout( () => {
+
+                roundOutcome(data.cpuMove);
+
+            }, 4000)
 
         }).catch(err => {
             console.log(err);
         })
-
         
         setTimeout( () => {
             setAnimate(false);
-        }, 5000);
+            setOngoing(true);
+        }, 4000);
+
+        setOngoing(false);
+
 
 
     }
 
-    const roundOutcome = () => {
+    const roundOutcome = (cpuMove) => {
 
         if(userMove === "rock") {
 
             if(cpuMove === "rock") {
-                return 0;
+                setOutcome(0);
             }
 
             if(cpuMove === "paper") {
-                return -1;
+                setCPUPoints((pts) => pts + 1);
+                setOutcome(-1);
             }
 
             if(cpuMove === "scissors") {
-                return 1;
+                setUserPoints((pts) => pts + 1);
+                setOutcome(1);
             }
 
         } 
@@ -69,15 +89,17 @@ const CPU = () => {
         if(userMove === "paper") {
 
             if(cpuMove === "rock") {
-                return 1;
+                setUserPoints((pts) => pts + 1);
+                setOutcome(1);
             }
 
             if(cpuMove === "paper") {
-                return 0;
+                setOutcome(0);
             }
 
             if(cpuMove === "scissors") {
-                return -1;
+                setCPUPoints((pts) => pts + 1);
+                setOutcome(-1);
             }
 
         }
@@ -85,23 +107,23 @@ const CPU = () => {
         if(userMove === "scissors") {
 
             if(cpuMove === "rock") {
-                return -1;
+                setCPUPoints((pts) => pts + 1);
+                setOutcome(-1);
             }
 
             if(cpuMove === "paper") {
-                return 1;
+                setUserPoints((pts) => pts + 1);
+                setOutcome(1);
             }
 
             if(cpuMove === "scissors") {
-                return 0;
+                setOutcome(0);
             }
 
         }
 
-
-
-
     }
+
     
     return (
 
@@ -118,33 +140,118 @@ const CPU = () => {
             <div id="gameplay">
 
                 <div className="player">
-                    <img 
-                        className={animate ? "gameplay-icons animate-hands": "gameplay-icons"}
-                        alt="User Move" src={rockLeft}/>
-                    <h3>Points: </h3>
+        
+                    {!ongoingRound && (
+
+                        <img 
+                            className={animate ? "gameplay-icons animate-hands": "gameplay-icons"}
+                            alt="User Move" src={rockLeft}
+                        />
+
+                    )}
+
+                    {ongoingRound && (userMove === "rock") && (
+
+                        <img 
+                            className={animate ? "gameplay-icons animate-hands": "gameplay-icons"}
+                            alt="User Move" src={rockLeft}
+                        />
+
+                    )}
+
+                    {ongoingRound && (userMove === "paper") && (
+
+                        <img 
+                            className={animate ? "gameplay-icons animate-hands": "gameplay-icons"}
+                            alt="User Move" src={paperLeft}
+                        />
+
+                    )}
+
+                    {ongoingRound && (userMove === "scissors") && (
+
+                        <img 
+                            className={animate ? "gameplay-icons animate-hands": "gameplay-icons"}
+                            alt="User Move" src={scissorsLeft}
+                        />
+
+                    )}
+                    <h3>Points: {userPoints}</h3>
+
+                    <select onChange={(e) => {
+                        setUserMove(e.target.value)
+                        setOngoing(false);
+                        }}>
+                        <option value="rock">Rock</option>
+                        <option value="paper">Paper</option>
+                        <option value="scissors">Scissors</option>
+                    </select>
                 </div>
 
-                <div className="indicator collapse">
-                    <img className="gameplay-icons" alt="Arrow" src={indicator}/>
+                <div className={outcome !== 0 ? "indicator": "indicator collapse"}>
+                    {outcome < 0 && (
+                        <img className="gameplay-icons" alt="Arrow" src={indicatorRight}/>
+                    )}
+
+                    {outcome > 0 && (
+                        <img className="gameplay-icons" alt="Arrow" src={indicatorLeft}/>
+                    )}
                 </div>
 
                 <div className="cpu">
-                    <img 
-                        className={animate ? "gameplay-icons animate-hands": "gameplay-icons"}
-                        alt="CPU Move" src={rockRight}/>
-                    <h3>Points: </h3>
+
+                    {!ongoingRound && (
+
+                        <img 
+                            className={animate ? "gameplay-icons animate-hands": "gameplay-icons"}
+                            alt="CPU Move" src={rockRight}
+                        />
+
+                    )}
+
+                    {ongoingRound && (cpuMove === "rock") && (
+
+                        <img 
+                            className={animate ? "gameplay-icons animate-hands": "gameplay-icons"}
+                            alt="CPU Move" src={rockRight}
+                        />
+
+                    )}
+
+                    {ongoingRound && (cpuMove === "paper") && (
+
+                        <img 
+                            className={animate ? "gameplay-icons animate-hands": "gameplay-icons"}
+                            alt="CPU Move" src={paperRight}
+                        />
+
+                    )}
+
+                    {ongoingRound && (cpuMove === "scissors") && (
+
+                        <img 
+                            className={animate ? "gameplay-icons animate-hands": "gameplay-icons"}
+                            alt="CPU Move" src={scissorsRight}
+                        />
+
+                    )}
+
+                    <h3>Points: {cpuPoints}</h3>
                 </div>
 
             </div>
 
             <div className="gameplay-actions">
 
-                <button id="start" className="teko"
-                onClick={() =>
-                    handleStartRound()
-                }
-                
-                >Start</button>
+                <button
+                    id="start"
+                    className="teko"
+                    onClick={() => handleStartRound()}
+                    disabled={animate}
+                >
+                    Start
+                </button>
+
                 <button id="restart" className="teko">Restart</button>
 
             </div>
