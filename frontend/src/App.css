@@ -76,11 +76,8 @@ header {
     grid-template-areas: 
         "player indicator cpu"; 
 
-
     padding: 3.2% 5% 3.2% 5%;
     align-items: start;
-
-   
 }
 .player { 
     grid-area: player; 
@@ -105,14 +102,12 @@ header {
     }
 
 }
-.cpu { 
+.cpu, .user2 { 
     grid-area: cpu; 
-
     display: flex;
     justify-content: center;
     flex-direction: column;
     align-items: center;
-
 }
 
 .gameplay-icons {
@@ -243,7 +238,7 @@ header {
     }
 }
 
-#user-moves {
+.user-moves {
 
     display: flex;
     justify-content: space-around;
@@ -278,6 +273,18 @@ header {
 
 .scissors {
     background-color: #7bb9fc;
+}
+
+.rock-2 {
+    background-color: #ff2020;
+}
+
+.paper-2 {
+    background-color: #ff4e4e;
+}
+
+.scissors-2 {
+    background-color: #fc7b7b;
 }
 
 .selected {

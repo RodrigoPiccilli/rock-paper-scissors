@@ -15,17 +15,17 @@ import indicatorLeft from "./images/indicatorLeft.png"
 import indicatorRight from "./images/indicatorRight.png"
 
 
-const CPU = () => {
+const Multiplayer = () => {
 
     const [animate, setAnimate] = useState(false);
 
-    const [userMove, setUserMove] = useState('rock');
+    const [user1Move, setUser1Move] = useState('rock');
 
-    const [cpuMove, setCPUMove] = useState('');
+    const [user2Move, setUser2Move] = useState('rock');
 
-    const [userPoints, setUserPoints] = useState(0);
+    const [user1Points, setUser1Points] = useState(0);
 
-    const [cpuPoints, setCPUPoints] = useState(0);
+    const [user2Points, setUser2Points] = useState(0);
 
     const [ongoingRound, setOngoing] = useState(false);
 
@@ -39,19 +39,38 @@ const CPU = () => {
 
         const handleKeyDown = (event) => {
 
-            const allowedKeys = ['a', 's', 'd'];
+            const allowedKeys = ['a', 's', 'd', 'j', 'k', 'l'];
 
             if(event.key === allowedKeys[0]) {
-                setUserMove("rock");
+                setUser1Move("rock");
+                setOngoing(false);
             }
 
             if(event.key === allowedKeys[1]) {
-                setUserMove("paper");
+                setUser1Move("paper");
+                setOngoing(false);
             }
 
             if(event.key === allowedKeys[2]) {
-                setUserMove("scissors");
+                setUser1Move("scissors");
+                setOngoing(false);
             }
+
+            if(event.key === allowedKeys[3]) {
+                setUser2Move("rock");
+                setOngoing(false);
+            }
+
+            if(event.key === allowedKeys[4]) {
+                setUser2Move("paper");
+                setOngoing(false);
+            }
+
+            if(event.key === allowedKeys[5]) {
+                setUser2Move("scissors");
+                setOngoing(false);
+            }
+
 
             return;
 
@@ -72,27 +91,8 @@ const CPU = () => {
         setAnimate(true);
         setOutcome(0);
 
-        fetch(`/cpu`)
-        .then(response => response.json())
-        .then(data => {
-
-            console.log(data);
-
-            console.log(userMove);
-
-            setCPUMove(data.cpuMove);
-
-            setTimeout( () => {
-
-                roundOutcome(data.cpuMove);
-
-            }, 4000)
-
-        }).catch(err => {
-            console.log(err);
-        })
-        
         setTimeout( () => {
+            roundOutcome(user2Move);
             setAnimate(false);
             setOngoing(true);
         }, 4000);
@@ -103,57 +103,57 @@ const CPU = () => {
 
     }
 
-    const roundOutcome = (cpuMove) => {
+    const roundOutcome = (user2Move) => {
 
-        if(userMove === "rock") {
+        if(user1Move === "rock") {
 
-            if(cpuMove === "rock") {
+            if(user2Move === "rock") {
                 setOutcome(0);
             }
 
-            if(cpuMove === "paper") {
-                setCPUPoints((pts) => pts + 1);
+            if(user2Move === "paper") {
+                setUser2Points((pts) => pts + 1);
                 setOutcome(-1);
             }
 
-            if(cpuMove === "scissors") {
-                setUserPoints((pts) => pts + 1);
+            if(user2Move === "scissors") {
+                setUser1Points((pts) => pts + 1);
                 setOutcome(1);
             }
 
         } 
 
-        if(userMove === "paper") {
+        if(user1Move === "paper") {
 
-            if(cpuMove === "rock") {
-                setUserPoints((pts) => pts + 1);
+            if(user2Move === "rock") {
+                setUser1Points((pts) => pts + 1);
                 setOutcome(1);
             }
 
-            if(cpuMove === "paper") {
+            if(user2Move === "paper") {
                 setOutcome(0);
             }
 
-            if(cpuMove === "scissors") {
-                setCPUPoints((pts) => pts + 1);
+            if(user2Move === "scissors") {
+                setUser2Points((pts) => pts + 1);
                 setOutcome(-1);
             }
 
         }
 
-        if(userMove === "scissors") {
+        if(user1Move === "scissors") {
 
-            if(cpuMove === "rock") {
-                setCPUPoints((pts) => pts + 1);
+            if(user2Move === "rock") {
+                setUser2Points((pts) => pts + 1);
                 setOutcome(-1);
             }
 
-            if(cpuMove === "paper") {
-                setUserPoints((pts) => pts + 1);
+            if(user2Move === "paper") {
+                setUser1Points((pts) => pts + 1);
                 setOutcome(1);
             }
 
-            if(cpuMove === "scissors") {
+            if(user2Move === "scissors") {
                 setOutcome(0);
             }
 
@@ -176,8 +176,8 @@ const CPU = () => {
     }
 
     const handleRestart = () => {
-        setCPUPoints(0);
-        setUserPoints(0);
+        setUser2Points(0);
+        setUser1Points(0);
         setOutcome(0);
         setOngoing(false);
         setAnimate(false);
@@ -215,7 +215,7 @@ const CPU = () => {
 
                     )}
 
-                    {ongoingRound && (userMove === "rock") && (
+                    {ongoingRound && (user1Move === "rock") && (
 
                         <img 
                             className={animate ? "gameplay-icons animate-hands": "gameplay-icons"}
@@ -224,7 +224,7 @@ const CPU = () => {
 
                     )}
 
-                    {ongoingRound && (userMove === "paper") && (
+                    {ongoingRound && (user1Move === "paper") && (
 
                         <img 
                             className={animate ? "gameplay-icons animate-hands": "gameplay-icons"}
@@ -233,7 +233,7 @@ const CPU = () => {
 
                     )}
 
-                    {ongoingRound && (userMove === "scissors") && (
+                    {ongoingRound && (user1Move === "scissors") && (
 
                         <img 
                             className={animate ? "gameplay-icons animate-hands": "gameplay-icons"}
@@ -241,27 +241,33 @@ const CPU = () => {
                         />
 
                     )}
-                    <h3>Points: {userPoints}</h3>
+                    <h3>Points: {user1Points}</h3>
 
                     <div className="user-moves">
                         <button 
-                            className={userMove === "rock" ? "rock teko selected user-move-button" : "rock teko user-move-button"}
+                            className={user1Move === "rock" ? "rock teko user-move-button" : "rock teko user-move-button"}
                             onClick={() => {
-                                setUserMove("rock")
+                                setUser1Move("rock")
                                 setOngoing(false);
-                        }}>Rock</button>
+                            }}
+                            disabled={animate}
+                        >Rock</button>
                         <button 
-                            className={userMove === "paper" ? "paper teko selected user-move-button" : "paper teko user-move-button"}
+                            className={user1Move === "paper" ? "paper teko user-move-button" : "paper teko user-move-button"}
                             onClick={() => {
-                                setUserMove("paper")
+                                setUser1Move("paper")
                                 setOngoing(false);
-                            }}>Paper</button>
+                            }}
+                            disabled={animate}
+                            >Paper</button>
                         <button 
-                            className={userMove === "scissors" ? "scissors teko selected user-move-button" : "scissors teko user-move-button"}
+                            className={user1Move === "scissors" ? "scissors teko user-move-button" : "scissors teko user-move-button"}
                             onClick={() => {
-                                setUserMove("scissors")
+                                setUser1Move("scissors")
                                 setOngoing(false);
-                        }}>Scissors</button>
+                            }}
+                            disabled={animate}
+                            >Scissors</button>
                     </div>
 
                     
@@ -277,62 +283,90 @@ const CPU = () => {
                     )}
                 </div>
 
-                <div className="cpu">
+                <div className="user2">
 
                     {!ongoingRound && (
 
                         <img 
                             className={animate ? "gameplay-icons animate-hands": "gameplay-icons"}
-                            alt="CPU Move" src={rockRight}
+                            alt="User 2 Move" src={rockRight}
                         />
 
                     )}
 
-                    {ongoingRound && (cpuMove === "rock") && (
+                    {ongoingRound && (user2Move === "rock") && (
 
                         <img 
                             className={animate ? "gameplay-icons animate-hands": "gameplay-icons"}
-                            alt="CPU Move" src={rockRight}
+                            alt="User 2 Move" src={rockRight}
                         />
 
                     )}
 
-                    {ongoingRound && (cpuMove === "paper") && (
+                    {ongoingRound && (user2Move === "paper") && (
 
                         <img 
                             className={animate ? "gameplay-icons animate-hands": "gameplay-icons"}
-                            alt="CPU Move" src={paperRight}
+                            alt="User 2 Move" src={paperRight}
                         />
 
                     )}
 
-                    {ongoingRound && (cpuMove === "scissors") && (
+                    {ongoingRound && (user2Move === "scissors") && (
 
                         <img 
                             className={animate ? "gameplay-icons animate-hands": "gameplay-icons"}
-                            alt="CPU Move" src={scissorsRight}
+                            alt="User 2 Move" src={scissorsRight}
                         />
 
                     )}
 
-                    <h3>Points: {cpuPoints}</h3>
+                    <h3>Points: {user2Points}</h3>
+
+                    <div className="user-moves">
+                        <button 
+                            className={user2Move === "rock" ? "rock-2 teko user-move-button" : "rock-2 teko user-move-button"}
+                            onClick={() => {
+                                setUser2Move("rock")
+                                setOngoing(false);
+                            }}
+                            disabled={animate}>
+                            Rock</button>
+                        <button 
+                            className={user2Move === "paper" ? "paper-2 teko user-move-button" : "paper-2 teko user-move-button"}
+                            onClick={() => {
+                                setUser2Move("paper")
+                                setOngoing(false);
+                            }}
+                            disabled={animate}
+                            >Paper</button>
+                        <button 
+                            className={user2Move === "scissors" ? "scissors-2 teko user-move-button" : "scissors-2 teko user-move-button"}
+                            onClick={() => {
+                                setUser2Move("scissors")
+                                setOngoing(false);
+                            }}
+                            disabled={animate}
+                        >Scissors</button>
+                    </div>
                 </div>
+                
 
             </div>
 
 
-            <div id="winning-overlay" className={userPoints === Number(score) || cpuPoints === Number(score) ? "" : "collapse"}>
+            <div id="winning-overlay" className={user1Points === Number(score) || user2Points === Number(score) ? "" : "collapse"}>
 
                 <div id="winning-popup">
 
                      <div id="winning-message">
 
-                        {userPoints === Number(score) && (
-                            <h1>You Win!</h1>
+                        {user1Points === Number(score) && (
+                            <h1>Player 1 Win!</h1>
                         )}
 
-                        {cpuPoints === Number(score) && (
-                            <h1>CPU Wins!</h1>
+                        {user2Points === Number(score) && (
+                            <h1>Player 2 Wins!</h1>
                         )}
                        
                             
@@ -377,4 +411,4 @@ const CPU = () => {
 }
 
 
-export default CPU
+export default Multiplayer
