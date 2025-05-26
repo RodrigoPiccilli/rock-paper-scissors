@@ -1,5 +1,7 @@
 import React, {useState, useEffect} from 'react'
 
+import {useNavigate} from 'react-router-dom'
+
 import rockLeft from "./images/rock-reverse.png"
 import paperLeft from "./images/paper.png"
 import scissorsLeft from "./images/scissors.png"
@@ -29,11 +31,46 @@ const CPU = () => {
 
     const [outcome, setOutcome] = useState(0);
 
+    const [score, setScore] = useState(5);
+
+    const navigate = useNavigate();
+
+    useEffect(() => {
+
+        const handleKeyDown = (event) => {
+
+            const allowedKeys = ['a', 's', 'd'];
+
+            if(event.key === allowedKeys[0]) {
+                setUserMove("rock");
+            }
+
+            if(event.key === allowedKeys[1]) {
+                setUserMove("paper");
+            }
+
+            if(event.key === allowedKeys[2]) {
+                setUserMove("scissors");
+            }
+
+            return;
+
+        }
+
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+        }
+
+
+
+    }, [])
+
     const handleStartRound = () => {
 
         setAnimate(true);
         setOutcome(0);
-
 
         fetch(`/cpu`)
         .then(response => response.json())
@@ -124,17 +161,45 @@ const CPU = () => {
 
     }
 
+    const handleScoreInput = (e) => {
+
+        const allowedKeys = ['Backspace', 'ArrowLeft', 'ArrowRight', 'Delete'];
+
+        const digits = /^[0-9]$/;
+
+        if (allowedKeys.includes(e.key) || digits.test(e.key)) {
+            return;
+        }
+
+        e.preventDefault();
+
+    }
+
+    const handleRestart = () => {
+        setCPUPoints(0);
+        setUserPoints(0);
+        setOutcome(0);
+        setOngoing(false);
+        setAnimate(false);
+    }
     
     return (
 
        <div id="game-container">
 
             <header>
-                <h1>Rock, Paper, Scissors!</h1>
+                <h1 onClick={() => navigate("/")}>Rock, Paper, Scissors!</h1>
             </header>
 
             <div id="game-type">
-                <h1>First to 5</h1>
+                <h1>First to </h1>
+                <input 
+                    type="number" 
+                    placeholder={score}
+                    onChange={(e) => setScore(e.target.value)}
+                    onKeyDown={(e) => handleScoreInput(e)} 
+                    disabled={animate}
+                />
             </div>
 
             <div id="gameplay">
@@ -178,14 +243,28 @@ const CPU = () => {
                     )}
                     <h3>Points: {userPoints}</h3>
 
-                    <select onChange={(e) => {
-                        setUserMove(e.target.value)
-                        setOngoing(false);
-                        }}>
-                        <option value="rock">Rock</option>
-                        <option value="paper">Paper</option>
-                        <option value="scissors">Scissors</option>
-                    </select>
+                    <div id="user-moves">
+                        <button 
+                            className={userMove === "rock" ? "rock teko selected user-move-button" : "rock teko user-move-button"}
+                            onClick={() => {
+                                setUserMove("rock")
+                                setOngoing(false);
+                        }}>Rock</button>
+                        <button 
+                            className={userMove === "paper" ? "paper teko selected user-move-button" : "paper teko user-move-button"}
+                            onClick={() => {
+                                setUserMove("paper")
+                                setOngoing(false);
+                            }}>Paper</button>
+                        <button 
+                            className={userMove === "scissors" ? "scissors teko selected user-move-button" : "scissors teko user-move-button"}
+                            onClick={() => {
+                                setUserMove("scissors")
+                                setOngoing(false);
+                        }}>Scissors</button>
+                    </div>
+
+                    
                 </div>
 
                 <div className={outcome !== 0 ? "indicator": "indicator collapse"}>
@@ -241,6 +320,33 @@ const CPU = () => {
 
             </div>
 
+
+            <div id="winning-overlay" className={userPoints === Number(score) || cpuPoints === Number(score) ? "" : "collapse"}>
+
+                <div id="winning-popup">
+
+                     <div id="winning-message">
+
+                        {userPoints === Number(score) && (
+                            <h1>You Win!</h1>
+                        )}
+
+                        {cpuPoints === Number(score) && (
+                            <h1>CPU Wins!</h1>
+                        )}
+                       
+                            
+                        <div className="exit-actions">
+                            <button id="play-again" className="teko" onClick={() => handleRestart()}>Play Again</button>
+                            <button id="main-menu" className="teko" onClick={() => navigate("/")}>Main Menu</button>
+                        </div>
+                    </div>
+                   
+
+                </div>
+
+            </div>
+
             <div className="gameplay-actions">
 
                 <button
@@ -252,7 +358,14 @@ const CPU = () => {
                     Start
                 </button>
 
-                <button id="restart" className="teko">Restart</button>
+                <button 
+                    id="restart" 
+                    className="teko" 
+                    onClick={() =>  handleRestart()}
+                    disabled={animate}
+                    >Restart
+                    </button>
+                
 
             </div>
 
